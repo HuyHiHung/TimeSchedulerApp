@@ -6,15 +6,17 @@ import model.User;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.sql.Date;
-import java.time.LocalDate;
+
+import com.github.lgooddatepicker.components.DatePicker;
 
 public class RegisterFrame extends JFrame {
 
-    private JTextField txtUsername, txtFullName, txtEmail, txtPhone, txtDob;
+    private JTextField txtUsername, txtFullName, txtEmail, txtPhone;
     private JPasswordField txtPassword, txtConfirmPassword;
     private JButton btnRegister, btnBack;
+
+    private DatePicker datePickerDob;
 
     private UserDAO userDAO = new UserDAOImpl();
 
@@ -37,7 +39,7 @@ public class RegisterFrame extends JFrame {
         txtFullName = new JTextField();
         txtEmail = new JTextField();
         txtPhone = new JTextField();
-        txtDob = new JTextField(); // yyyy-mm-dd
+        datePickerDob = new DatePicker();
 
         btnRegister = new JButton("Đăng ký");
         btnBack = new JButton("Quay lại");
@@ -54,8 +56,8 @@ public class RegisterFrame extends JFrame {
         panel.add(txtEmail);
         panel.add(new JLabel("Số điện thoại:"));
         panel.add(txtPhone);
-        panel.add(new JLabel("Ngày sinh (yyyy-mm-dd):"));
-        panel.add(txtDob);
+        panel.add(new JLabel("Ngày sinh:"));
+        panel.add(datePickerDob);
 
         panel.add(btnRegister);
         panel.add(btnBack);
@@ -76,10 +78,10 @@ public class RegisterFrame extends JFrame {
         String fullName = txtFullName.getText().trim();
         String email = txtEmail.getText().trim();
         String phone = txtPhone.getText().trim();
-        String dobStr = txtDob.getText().trim();
+        java.time.LocalDate dobLocal = datePickerDob.getDate();
 
         if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()
-                || email.isEmpty() || dobStr.isEmpty()) {
+                || email.isEmpty() || dobLocal == null) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin bắt buộc.");
             return;
         }
@@ -94,17 +96,11 @@ public class RegisterFrame extends JFrame {
             return;
         }
 
-        Date dob;
-        try {
-            dob = Date.valueOf(LocalDate.parse(dobStr));
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Ngày sinh không hợp lệ. Dạng đúng: yyyy-MM-dd");
-            return;
-        }
+        Date dob = Date.valueOf(dobLocal);
 
         User user = new User();
         user.setUsername(username);
-        user.setPassword(password); // Có thể hash nếu dùng PasswordUtils
+        user.setPassword(password); // bạn không dùng hash nên giữ nguyên
         user.setFullName(fullName);
         user.setEmail(email);
         user.setPhone(phone);

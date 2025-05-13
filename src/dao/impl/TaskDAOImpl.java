@@ -8,6 +8,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 public class TaskDAOImpl implements TaskDAO {
 
     private Connection conn = DBConnection.getConnection();
@@ -118,4 +122,29 @@ public class TaskDAOImpl implements TaskDAO {
             rs.getInt("user_id")
         );
     }
+
+    @Override
+    public List<Task> getTasksByUserIdAndDate(int userId, LocalDate date) {
+        String sql = "SELECT * FROM tasks WHERE user_id = ? AND start_time >= ? AND start_time < ?";
+        List<Task> list = new ArrayList<>();
+
+        // Xác định khoảng thời gian: từ đầu đến cuối ngày
+        Timestamp startOfDay = Timestamp.valueOf(date.atStartOfDay());
+        Timestamp endOfDay = Timestamp.valueOf(date.plusDays(1).atStartOfDay());
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setTimestamp(2, startOfDay);
+            ps.setTimestamp(3, endOfDay);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(extractTask(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
 }

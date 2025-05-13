@@ -6,8 +6,6 @@ import model.User;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class LoginFrame extends JFrame {
 
@@ -16,6 +14,7 @@ public class LoginFrame extends JFrame {
     private JButton btnLogin, btnRegister;
 
     private UserDAO userDAO = new UserDAOImpl();
+    private User loggedInUser = null;  // ✅ thêm biến này để lưu user đã đăng nhập
 
     public LoginFrame() {
         setTitle("Đăng nhập");
@@ -64,7 +63,7 @@ public class LoginFrame extends JFrame {
         // Mở form đăng ký
         btnRegister.addActionListener(e -> {
             new RegisterFrame().setVisible(true);
-            dispose(); // đóng frame hiện tại
+            dispose();
         });
     }
 
@@ -77,20 +76,22 @@ public class LoginFrame extends JFrame {
             return;
         }
 
-        // Nếu có dùng PasswordUtils thì hash mật khẩu ở đây
+        // Nếu có PasswordUtils.hash() thì gọi ở đây
         // password = PasswordUtils.hash(password);
 
         boolean result = userDAO.checkLogin(username, password);
 
         if (result) {
-            User user = userDAO.getUserByUsername(username);
+            loggedInUser = userDAO.getUserByUsername(username);  // ✅ Lưu user lại
             JOptionPane.showMessageDialog(this, "Đăng nhập thành công!");
-
-            // Mở giao diện quản lý task
-            new TaskManagerFrame(user).setVisible(true);
-            dispose();
+            dispose(); // chỉ đóng, Main sẽ xử lý tiếp
         } else {
             JOptionPane.showMessageDialog(this, "Sai tên đăng nhập hoặc mật khẩu.");
         }
+    }
+
+    // ✅ Trả về người dùng sau đăng nhập
+    public User getLoggedInUser() {
+        return this.loggedInUser;
     }
 }

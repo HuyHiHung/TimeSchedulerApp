@@ -1,13 +1,16 @@
 package myapp;
 
 import db.DBConnection;
+import model.User;
 import ui.LoginFrame;
+import ui.calendar.TaskCalendarPanel;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class Main {
     public static void main(String[] args) {
-        // Thiết lập giao diện Swing (nếu muốn đẹp hơn)
+        // Thiết lập giao diện
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
@@ -20,9 +23,42 @@ public class Main {
             System.exit(1);
         }
 
-        // Hiển thị giao diện đăng nhập
+        // Chạy trên luồng sự kiện
         SwingUtilities.invokeLater(() -> {
-            new LoginFrame().setVisible(true);
+            showLoginAndLaunchCalendar();
         });
+    }
+
+    private static void showLoginAndLaunchCalendar() {
+        LoginFrame loginFrame = new LoginFrame();
+
+        // Giả định bạn có phương thức getLoggedInUser() để lấy user sau khi đăng nhập
+        loginFrame.setVisible(true);
+
+        // Chờ người dùng đăng nhập xong
+        loginFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                User user = loginFrame.getLoggedInUser();
+                if (user != null) {
+                    showCalendarUI(user);
+                } else {
+                    System.exit(0); // không đăng nhập → thoát
+                }
+            }
+        });
+    }
+
+    private static void showCalendarUI(User user) {
+        JFrame frame = new JFrame("Lịch công việc - Xin chào " + user.getFullName());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(900, 600);
+        frame.setLocationRelativeTo(null);
+
+        // Giao diện chính là TaskCalendarPanel
+        TaskCalendarPanel calendarPanel = new TaskCalendarPanel(user.getId());
+        frame.add(calendarPanel, BorderLayout.CENTER);
+
+        frame.setVisible(true);
     }
 }
