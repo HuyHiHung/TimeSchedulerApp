@@ -19,6 +19,7 @@ public class TaskPopupDialog extends JDialog {
     private final JTable table;
     private final DefaultTableModel tableModel;
     private final TaskUpdateListener listener;
+    
 
     public TaskPopupDialog(Window owner, int userId, LocalDate date, List<Task> tasks, TaskUpdateListener listener) {
         super(owner, "Công việc ngày " + date, ModalityType.APPLICATION_MODAL);
@@ -62,6 +63,7 @@ public class TaskPopupDialog extends JDialog {
         }
     }
 
+
     private void handleEdit() {
         int row = table.getSelectedRow();
         if (row == -1) {
@@ -96,7 +98,8 @@ public class TaskPopupDialog extends JDialog {
     }
 
     private void reload() {
-        List<Task> tasks = taskDAO.getTasksByUserIdAndDate(userId, date);
-        loadTasks(tasks);
+        List<Task> updatedTasks = taskDAO.getTasksByUserIdAndDate(userId, date);
+        loadTasks(updatedTasks);
     }
+
 }
