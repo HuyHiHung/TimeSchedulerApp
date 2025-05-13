@@ -100,7 +100,7 @@ public class RegisterFrame extends JFrame {
 
         User user = new User();
         user.setUsername(username);
-        user.setPassword(password); // bạn không dùng hash nên giữ nguyên
+        user.setPassword(password);
         user.setFullName(fullName);
         user.setEmail(email);
         user.setPhone(phone);

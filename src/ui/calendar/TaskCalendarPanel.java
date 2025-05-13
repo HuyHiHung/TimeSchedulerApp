@@ -56,18 +56,30 @@ public class TaskCalendarPanel extends JPanel {
         add(header, BorderLayout.NORTH);
         add(contentPanel, BorderLayout.CENTER);
         
-        // Thêm nút "Thêm công việc"
+     // ===== Bottom Panel =====
         JButton btnAddTask = new JButton("+ Thêm công việc");
         btnAddTask.setFocusPainted(false);
-        btnAddTask.setBackground(new Color(97, 173, 255));
+        btnAddTask.setBackground(new Color(200, 220, 255));
         btnAddTask.setForeground(Color.BLACK);
-
         btnAddTask.addActionListener(e -> openAddTaskDialog());
 
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        bottomPanel.add(btnAddTask);
+        JButton btnLogout = new JButton("Đăng xuất");
+        btnLogout.setFocusPainted(false);
+        btnLogout.setBackground(Color.LIGHT_GRAY);
+        btnLogout.setForeground(Color.BLACK);
+        btnLogout.addActionListener(e -> {
+            SwingUtilities.getWindowAncestor(this).dispose();
+            new ui.LoginFrame().setVisible(true);
+        });
+
+
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        bottomPanel.add(btnLogout, BorderLayout.WEST);
+        bottomPanel.add(btnAddTask, BorderLayout.EAST);
 
         add(bottomPanel, BorderLayout.SOUTH);
+
 
         // Load ban đầu
         updateCalendar();

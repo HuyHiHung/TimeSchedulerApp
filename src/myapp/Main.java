@@ -49,16 +49,12 @@ public class Main {
         });
     }
 
-    private static void showCalendarUI(User user) {
+    public static void showCalendarUI(User user) {
         JFrame frame = new JFrame("Lịch công việc - Xin chào " + user.getFullName());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(900, 600);
+        frame.setSize(1200, 800);
         frame.setLocationRelativeTo(null);
-
-        // Giao diện chính là TaskCalendarPanel
-        TaskCalendarPanel calendarPanel = new TaskCalendarPanel(user.getId());
-        frame.add(calendarPanel, BorderLayout.CENTER);
-
+        frame.add(new TaskCalendarPanel(user.getId()));
         frame.setVisible(true);
     }
 }

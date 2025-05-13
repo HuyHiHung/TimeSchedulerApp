@@ -3,6 +3,7 @@ package ui;
 import dao.UserDAO;
 import dao.impl.UserDAOImpl;
 import model.User;
+import myapp.Main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,10 +51,16 @@ public class LoginFrame extends JFrame {
         gbc.gridx = 1; gbc.anchor = GridBagConstraints.WEST;
         panel.add(txtPassword, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 2;
-        panel.add(btnLogin, gbc);
-        gbc.gridx = 1;
-        panel.add(btnRegister, gbc);
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
+        buttonPanel.add(btnLogin);
+        buttonPanel.add(btnRegister);
+
+        gbc.gridx = 0; 
+        gbc.gridy = 2; 
+        gbc.gridwidth = 2; 
+        gbc.anchor = GridBagConstraints.CENTER;
+        panel.add(buttonPanel, gbc);
+
 
         add(panel);
 
@@ -63,7 +70,7 @@ public class LoginFrame extends JFrame {
         // Mở form đăng ký
         btnRegister.addActionListener(e -> {
             new RegisterFrame().setVisible(true);
-            dispose();
+            setVisible(false);
         });
     }
 
@@ -84,7 +91,8 @@ public class LoginFrame extends JFrame {
         if (result) {
             loggedInUser = userDAO.getUserByUsername(username);  // ✅ Lưu user lại
             JOptionPane.showMessageDialog(this, "Đăng nhập thành công!");
-            dispose(); // chỉ đóng, Main sẽ xử lý tiếp
+            Main.showCalendarUI(loggedInUser);
+            dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Sai tên đăng nhập hoặc mật khẩu.");
         }
